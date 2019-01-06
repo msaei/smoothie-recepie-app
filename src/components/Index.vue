@@ -16,24 +16,13 @@
 
 
 <script>
+import db from "@/firebase/init";
+
 export default {
   name: "Index",
   data() {
     return {
-      smoothies: [
-        {
-          title: "Peach Apple",
-          slug: "peach-apple",
-          ingredients: ["peach", "apple", "milk"],
-          id: "1"
-        },
-        {
-          title: "Shir Moz",
-          slug: "shir-moz",
-          ingredients: ["banana", "milk", "sugar", "ice"],
-          id: "2"
-        }
-      ]
+      smoothies: []
     };
   },
   methods: {
@@ -42,6 +31,19 @@ export default {
         return smoothie.id != id;
       });
     }
+  },
+  created() {
+    //fetch data from the firebase
+    db.collection("smoothies")
+      .get()
+      .then(snapshot => {
+        snapshot.forEach(doc => {
+          //console.log(doc.data());
+          let smoothie = doc.data();
+          smoothie.id = doc.id;
+          this.smoothies.push(smoothie);
+        });
+      });
   }
 };
 </script>
