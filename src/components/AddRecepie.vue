@@ -9,6 +9,7 @@
       <div class="field" v-for="(ing, index) in ingredients" :key="index">
         <label for="ingredient">Ingredient:</label>
         <input type="text" name="ingredient" v-model="ingredients[index]">
+        <i class="material-icons delete" @click="deleteIng(ing)">delete</i>
       </div>
       <div class="field add-ingredient">
         <label for="add-ingredient">Add Ingredient:</label>
@@ -47,7 +48,7 @@ export default {
           remove: /[~!@#$%^&*()_+'"]/g,
           lower: true
         });
-        console.log(this.slug);
+
         db.collection("smoothies")
           .add({
             title: this.title,
@@ -73,6 +74,11 @@ export default {
       } else {
         this.feedback = "You should add an ingredient!";
       }
+    },
+    deleteIng(ing) {
+      this.ingredients = this.ingredients.filter(elm => {
+        return elm != ing;
+      });
     }
   }
 };
@@ -90,6 +96,15 @@ export default {
 }
 .add-recepie .field {
   margin: 20px auto;
+  position: relative;
+}
+.add-recepie .delete {
+  position: absolute;
+  right: 0px;
+  bottom: 16px;
+  font-size: 1.4em;
+  color: #aaa;
+  cursor: pointer;
 }
 </style>
 
