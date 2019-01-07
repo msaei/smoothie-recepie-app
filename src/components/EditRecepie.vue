@@ -26,7 +26,7 @@
 
 <script>
 import db from "@/firebase/init";
-
+import slugify from "slugify";
 export default {
   name: "EditRecepie",
   data() {
@@ -38,7 +38,30 @@ export default {
   },
   methods: {
     editRecepie() {
-      console.log(this.recepie.title, this.recepie.ingredients);
+      if (this.recepie.title) {
+        this.feedback = null;
+        this.recepie.slug = slugify(this.recepie.title, {
+          replacement: "-",
+          remove: /[~!@#$%^&*()_+'"]/g,
+          lower: true
+        });
+
+        db.collection("smoothies")
+          .doc(this.recepie.id)
+          .update({
+            title: this.recepie.title,
+            ingredients: this.recepie.ingredients,
+            slug: this.recepie.slug
+          })
+          .then(() => {
+            this.$router.push({ name: "Index" });
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      } else {
+        this.feedback = "You should add a title";
+      }
     },
     addIng() {
       if (this.another) {
